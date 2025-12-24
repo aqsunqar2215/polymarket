@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  market-maker-bot:
+    build: .
+    container_name: polymarket-market-maker-bot
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=INFO
+    restart: unless-stopped
+    ports:
+      - "9305:9305"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "10"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9305/metrics"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
